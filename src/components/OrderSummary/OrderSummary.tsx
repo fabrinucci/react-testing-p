@@ -1,8 +1,8 @@
-import React, { useMemo } from "react";
-import { Order } from "../../types/Orders";
-import { StatusBadge } from "../StatusBadge";
-import styles from "./OrderSummary.module.scss";
-import { getSummaryOrders } from "../../utils/sumamry";
+import React, { useMemo } from 'react';
+import { Order } from '../../types/Orders';
+import { StatusBadge } from '../StatusBadge';
+import styles from './OrderSummary.module.scss';
+import { getSummaryOrders } from '../../utils/sumamry';
 
 export const OrderSummary: React.FC<{ orders: Order[] }> = ({ orders }) => {
   const summary = useMemo(() => getSummaryOrders(orders), [orders]);
@@ -15,17 +15,22 @@ export const OrderSummary: React.FC<{ orders: Order[] }> = ({ orders }) => {
       <div className={styles.OrdersSummary__grid}>
         <div className={styles.OrdersSummary__item}>
           <p className={styles.OrdersSummary__label}>Total Orders</p>
-          <p className={styles.OrdersSummary__value}>{summary.totalOrders}</p>
+          <p data-testid='totalOrders' className={styles.OrdersSummary__value}>
+            {summary.totalOrders}
+          </p>
         </div>
         <div className={styles.OrdersSummary__item}>
           <p className={styles.OrdersSummary__label}>Total Value</p>
-          <p className={styles.OrdersSummary__value}>
+          <p data-testid='totalValue' className={styles.OrdersSummary__value}>
             ${summary.totalValue.toFixed(2)}
           </p>
         </div>
         <div className={styles.OrdersSummary__item}>
           <p className={styles.OrdersSummary__label}>Average Order Value</p>
-          <p className={styles.OrdersSummary__value}>
+          <p
+            data-testid='averageOrderValue'
+            className={styles.OrdersSummary__value}
+          >
             ${summary.averageOrderValue.toFixed(2)}
           </p>
         </div>

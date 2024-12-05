@@ -4,6 +4,7 @@ import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { SessionProvider, useSession } from '../../context/AuthContext';
 import { getOrders } from '../../services/getOrders';
+import { getSummaryOrders } from '../../utils/sumamry';
 import { Orders } from './Orders';
 
 vi.mock('../../services/getOrders', () => ({
@@ -70,13 +71,33 @@ describe('Test login', () => {
     );
   };
 
-  it('Should be in the document', async () => {
+  it('Should render the same amount of orders', async () => {
     mockGetOrders.mockResolvedValue(mockOrders);
     handleOrders('visualizer1');
 
     await waitFor(() => {
       const orders = screen.getAllByRole('heading', { level: 3 });
       expect(orders).toHaveLength(mockOrders.length);
+    });
+  });
+
+  it('Should display correct summary', async () => {
+    mockGetOrders.mockResolvedValue(mockOrders);
+    const { totalOrders, totalValue, averageOrderValue } =
+      getSummaryOrders(mockOrders);
+
+    handleOrders('superadmin');
+
+    await waitFor(() => {
+      const totalOrdersElement = screen.getByTestId('totalOrders');
+      const totalValueElement = screen.getByTestId('totalValue');
+      const averageOrderValueElement = screen.getByTestId('averageOrderValue');
+
+      expect(Number(totalOrdersElement.textContent)).toBe(totalOrders);
+      expect(totalValueElement.textContent).toBe('$' + totalValue);
+      expect(averageOrderValueElement.textContent).toBe(
+        '$' + averageOrderValue
+      );
     });
   });
 });
