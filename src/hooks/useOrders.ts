@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { Order } from '../types/Orders';
+import { useNavigate } from 'react-router-dom';
 import { getOrders } from '../services/getOrders';
 import { useSession } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import type { Order } from '../types/Orders';
 
 export const useOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
