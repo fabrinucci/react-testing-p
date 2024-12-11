@@ -20,7 +20,7 @@ describe('Test useOrders', () => {
   const mockGetOrders = getOrders as Mock;
   const mockUseSession = useSession as Mock;
 
-  it('Should be true', () => {
+  it('Should render correct results', async () => {
     const mockedOrders = [
       {
         id: 1,
@@ -34,14 +34,33 @@ describe('Test useOrders', () => {
 
     mockGetOrders.mockResolvedValue(mockedOrders);
     mockUseSession.mockReturnValue({ user: { id: 1, role: 'admin' } });
+
     const { result } = renderHook(() => useOrders());
+
     expect(result.current.loading).toBe(true);
     expect(result.current.error).toBe(null);
 
-    waitFor(() => {
-      expect(result.current.error).toBe(null);
+    await waitFor(() => {
       expect(result.current.loading).toBe(false);
       expect(result.current.orders).toEqual(mockedOrders);
+      expect(result.current.error).toBe(null);
+    });
+  });
+
+  it('Should return an error', async () => {
+    mockGetOrders.mockRejectedValue(new Error('Api Error'));
+    mockUseSession.mockReturnValue({ user: { id: 1, role: 'admin' } });
+
+    const { result } = renderHook(() => useOrders());
+
+    expect(result.current.loading).toBe(true);
+    expect(result.current.error).toBe(null);
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+      expect(result.current.error).toBe(
+        'Failed to fetch orders. Please try again later.'
+      );
     });
   });
 });
